@@ -1,23 +1,33 @@
 package edu.iuhs.crm.service;
-
+import edu.iuhs.crm.entity.PatientEntity;
 import edu.iuhs.crm.model.Patient;
+import edu.iuhs.crm.repository.PatientRepository;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RestController;
+
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class PatientServiceImpl implements PatientService{
 
-    List<Patient> patientList = new ArrayList<>();
+
+    final PatientRepository patientRepository;
+    final ModelMapper modelMapper;
+
     @Override
     public List<Patient> getPatient() {
+        List<Patient> patientList = new ArrayList<>();
+        patientRepository.findAll().forEach(pv -> patientList.add(modelMapper.map(pv, Patient.class)));
         return patientList;
     }
 
     @Override
     public void addPatient( Patient patient) {
-        patientList.add(patient);
+
+        patientRepository.save(modelMapper.map(patient, PatientEntity.class));
     }
 }
